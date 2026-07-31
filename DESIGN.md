@@ -131,3 +131,24 @@ Evidence for the art-direction argument in the README:
 **Keeps (fixed constraint):** `primary-500` `#f42a8f` and its ramp; the inverted dark scale; the glass alpha model; IRANYekanXVF with `ss02` and `"dots" 1`; the 950 extrablack display weight; green/red as up/down; `cubic-bezier(.87,0,.13,1)` as the 2D signature ease.
 
 **Changes:** the 440px phone column → full-viewport 3D stage; ambient motion → input- and scroll-responsive; the mixed illustration styles → one clay-pixelate language; off-token hexes → tokens only.
+
+## Rebuilt asset inventory
+
+Original rasters are tracing references only and are downloaded to the operating system's temporary directory by `scripts/trace-brand.mjs`. They are never written into this repository. The committed outputs are resolution-independent occupancy maps or hand-authored geometry.
+
+| Source motif | Rebuilt form | Runtime use |
+|---|---|---|
+| Stepped پ logo | `lib/brand/logo-map.ts` + instanced rounded voxels | `BrandMark` above the vessel |
+| پامپ wordmark | `lib/brand/wordmark-map.ts` + run-length SVG rectangles | Fixed live-pool header |
+| Campaign step coins | Shared voxel-relief coin geometry | All 25 pressure path steps |
+| Pumps bottle-cap coin | Crimped 16-flute rim and voxel پ relief | Call flip and settlement burst |
+| Treasure, crown, gems | Seeded instanced clay voxels and authored crown | Podium staging |
+| UI/stat symbols | 24px inline SVG, 1.5px rounded stroke | Semantic DOM chrome |
+
+## AI media provenance
+
+`scripts/generate-media.mjs` defines the complete additive manifest and enforces the $8 recorded-cost cap. Draft images use `google/gemini-3.1-flash-image`; `--final` uses `google/gemini-3-pro-image`. Video requests use `google/veo-3.1-lite` with `kling/v3-std` as submission fallback. Every prompt includes the clay-voxel, dark-magenta, no-text style suffix.
+
+Accepted outputs are recorded in `public/media/manifest.json` with model, exact prompt, UTC date, and reported cost. The 2026-07-31 run accepted a Gemini Pro hero poster and environment glow plus Veo Lite puff/spark sources, extracted into 4×4 sheets. Recorded provider cost is `$2.837088`, plus one pre-manifest poster attempt whose cost could not be recovered after local conversion failed.
+
+Both Veo fallback-loop attempts were rejected during visual review because they replaced the supplied vessel composition. Their `$1.28` combined cost remains in the manifest. The shipped `fallback-loop.mp4` is instead a deterministic, seamless five-second motion pass derived from the accepted AI poster, preventing a visible poster-to-video composition jump. The real-time scene remains complete if any optional sheet is removed.

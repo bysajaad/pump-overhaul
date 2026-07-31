@@ -4,6 +4,8 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { usePressure } from "@/components/PressureProvider";
+import { TreasureMound } from "@/components/scene/TreasureMound";
+import type { Fidelity } from "@/lib/fidelity";
 
 /**
  * The leaderboard, as furniture.
@@ -25,7 +27,7 @@ const PLINTHS = [
   { x: 0.85, height: 0.62, tone: 0.44 },
 ];
 
-export function Podium() {
+export function Podium({ fidelity }: { fidelity: Fidelity }) {
   const group = useRef<THREE.Group>(null);
   const { live } = usePressure();
   const elapsed = useRef(0);
@@ -43,7 +45,7 @@ export function Podium() {
     const { surge } = live.current;
     if (!group.current) return;
 
-    group.current.children.forEach((child, i) => {
+    group.current.children.slice(0, PLINTHS.length).forEach((child, i) => {
       const phase = elapsed.current * 1.6 + i * 0.9;
       // Slight vertical bob, amplified briefly by crowd activity.
       child.position.y =
@@ -60,6 +62,7 @@ export function Podium() {
           <meshBasicMaterial color={colors[i]} toneMapped={false} />
         </mesh>
       ))}
+      <TreasureMound fidelity={fidelity} />
     </group>
   );
 }

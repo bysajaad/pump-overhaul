@@ -3,6 +3,11 @@ import { PressureProvider } from "@/components/PressureProvider";
 import { Stage } from "@/components/scene/Stage";
 import { PoolReadout } from "@/components/PoolReadout";
 import { CallInstrument } from "@/components/CallInstrument";
+import { GameProvider } from "@/components/GameProvider";
+import { InputProvider } from "@/components/InputProvider";
+import { Header } from "@/components/Header";
+import { Gamepad, Gift, Play, Users } from "@/components/icons";
+import { TiltMicrocopy } from "@/components/TiltMicrocopy";
 import { faCompactToman, faNum } from "@/lib/format";
 
 /**
@@ -42,7 +47,7 @@ function Beat({
         align === "top" ? "justify-start pt-[8vh]" : "justify-center"
       }`}
     >
-      <div className="rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
+      <div className="parallax-panel rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
         <h2 className="text-2xl font-extrablack leading-2xl text-neutral-white">{title}</h2>
         <div className="mt-4 flex flex-col gap-4">{children}</div>
       </div>
@@ -53,13 +58,17 @@ function Beat({
 export default function Home() {
   return (
     <PressureProvider>
-      <Stage />
+      <InputProvider>
+        <GameProvider>
+          <Header />
+          <Stage />
 
       <main className="relative z-10">
         {/* -- Beat 1: Pressure. Playable before anything is explained. ----- */}
         <section className="flex min-h-dvh flex-col items-center justify-center gap-8 px-4 py-16">
           <PoolReadout />
           <CallInstrument />
+          <TiltMicrocopy />
           <p className="max-w-[27.5rem] text-center text-2xs text-neutral-400">
             نمونهٔ آزمایشی — بدون پول واقعی و بدون جایزهٔ واقعی
           </p>
@@ -103,18 +112,20 @@ export default function Home() {
         <Beat title="این فشار از کجا می‌آید" align="top">
           <dl className="grid grid-cols-2 gap-4">
             {[
-              { label: "کاربر فعال", value: `${faNum(4)}+ میلیون` },
-              { label: "بازدید یوتیوب", value: `${faNum(105)}+ میلیون` },
+              { label: "کاربر فعال", value: `${faNum(4)}+ میلیون`, Icon: Users },
+              { label: "بازدید یوتیوب", value: `${faNum(105)}+ میلیون`, Icon: Play },
               {
                 label: "مجموع جوایز پرداختی",
                 value: `${faCompactToman(87_455_950_900)} تومان`,
+                Icon: Gift,
               },
-              { label: "نفرات جایزه‌گرفته", value: faNum(1_272_998) },
+              { label: "نفرات جایزه‌گرفته", value: faNum(1_272_998), Icon: Gamepad },
             ].map((stat) => (
               <div
                 key={stat.label}
                 className="rounded-2xl border border-glass-white-10 bg-glass-black-40 p-4"
               >
+                <stat.Icon className="mb-2 size-10 text-primary-650" />
                 <dd className="text-lg font-extrabold text-primary-600">{stat.value}</dd>
                 <dt className="mt-1 text-xs text-neutral-550">{stat.label}</dt>
               </div>
@@ -127,7 +138,7 @@ export default function Home() {
 
         {/* -- Beat 6: the ask, which is just "keep playing" ---------------- */}
         <section className="flex min-h-dvh flex-col items-center justify-center gap-6 px-5 text-center">
-          <div className="rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
+          <div className="parallax-panel rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
             <h2 className="max-w-[30rem] text-2xl font-extrablack leading-2xl text-neutral-white">
               دعوت پایانی، «نصب کن» نیست
             </h2>
@@ -143,7 +154,9 @@ export default function Home() {
         <footer className="px-5 py-10 text-center text-2xs text-neutral-400">
           نمونهٔ آزمایشی طراحی — وابسته یا منتشرشده توسط پامپ نیست.
         </footer>
-      </main>
+          </main>
+        </GameProvider>
+      </InputProvider>
     </PressureProvider>
   );
 }

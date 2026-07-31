@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, AnimatePresence } from "motion/react";
-import { useCall } from "@/components/useCall";
+import { useGame } from "@/components/GameProvider";
+import { Magnetic } from "@/components/Magnetic";
+import { Clock, EthGlyph } from "@/components/icons";
 import { faClock, faDecimal, faNum } from "@/lib/format";
 
 /**
@@ -15,7 +17,7 @@ import { faClock, faDecimal, faNum } from "@/lib/format";
  * rather than patched.
  */
 export function CallInstrument() {
-  const { state, price, remaining, commit, reset } = useCall();
+  const { state, price, remaining, commit, reset } = useGame();
   const open = state.phase === "committed" || state.phase === "resolving";
   const settled = state.phase === "settled";
 
@@ -23,7 +25,7 @@ export function CallInstrument() {
     <div className="w-full max-w-[27.5rem] rounded-3xl border border-glass-white-10 bg-glass-black-40 p-5 backdrop-blur-lg">
       {/* Ticker */}
       <div className="flex items-baseline justify-between gap-3">
-        <span className="text-xs text-neutral-550">قیمت اتریوم</span>
+        <span className="flex items-center gap-2 text-xs text-neutral-550"><EthGlyph className="size-8" />قیمت اتریوم</span>
         {/* Persian currency word rather than "$": a Latin symbol beside Persian
             digits forces a bidi direction flip and renders on the wrong side. */}
         <span className="text-lg text-neutral-900 tabular-nums">
@@ -50,22 +52,22 @@ export function CallInstrument() {
               تا ۳۰ ثانیهٔ آینده قیمت بالا می‌رود یا پایین می‌آید؟
             </p>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <button
+              <Magnetic><button
                 onClick={() => commit("up")}
                 disabled={!price}
-                className="rounded-xl bg-green-500/15 py-3 text-md font-extrabold text-green-600 transition-colors duration-300 hover:bg-green-500/25 disabled:opacity-40"
+                className="w-full rounded-xl bg-green-500/15 py-3 text-md font-extrabold text-green-600 transition-colors duration-300 hover:bg-green-500/25 disabled:opacity-40"
                 style={{ transitionTimingFunction: "cubic-bezier(0.87,0,0.13,1)" }}
               >
                 بالا می‌رود
-              </button>
-              <button
+              </button></Magnetic>
+              <Magnetic><button
                 onClick={() => commit("down")}
                 disabled={!price}
-                className="rounded-xl bg-red-500/15 py-3 text-md font-extrabold text-red-600 transition-colors duration-300 hover:bg-red-500/25 disabled:opacity-40"
+                className="w-full rounded-xl bg-red-500/15 py-3 text-md font-extrabold text-red-600 transition-colors duration-300 hover:bg-red-500/25 disabled:opacity-40"
                 style={{ transitionTimingFunction: "cubic-bezier(0.87,0,0.13,1)" }}
               >
                 پایین می‌آید
-              </button>
+              </button></Magnetic>
             </div>
             <p className="mt-3 text-2xs text-neutral-400">
               بدون ثبت‌نام. همین‌جا، همین حالا.
@@ -93,7 +95,8 @@ export function CallInstrument() {
                   {state.call.direction === "up" ? "بالا" : "پایین"}
                 </strong>
               </span>
-              <span className="font-mono text-xl tabular-nums text-primary-600">
+              <span className="flex items-center gap-2 font-mono text-xl tabular-nums text-primary-600">
+                <Clock className="size-8" />
                 {faClock(remaining)}
               </span>
             </div>
@@ -136,13 +139,13 @@ export function CallInstrument() {
               پامپز گرفتی
               {state.call.outcome === "wrong" && " — باخت هم پامپز دارد"}
             </p>
-            <button
+            <Magnetic><button
               onClick={reset}
               className="mt-4 w-full rounded-xl bg-primary-500 py-3 text-md font-extrabold text-neutral-white transition-transform duration-300 hover:scale-[1.02]"
               style={{ transitionTimingFunction: "cubic-bezier(0.87,0,0.13,1)" }}
             >
               یک‌بار دیگر
-            </button>
+            </button></Magnetic>
           </motion.div>
         )}
       </AnimatePresence>

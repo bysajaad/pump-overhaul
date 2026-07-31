@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { usePressure } from "@/components/PressureProvider";
 import type { Fidelity } from "@/lib/fidelity";
+import { useInput } from "@/components/InputProvider";
 
 /**
  * The crowd — millions of players as a volumetric field.
@@ -20,6 +21,7 @@ import type { Fidelity } from "@/lib/fidelity";
 export function Crowd({ fidelity }: { fidelity: Fidelity }) {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const { live } = usePressure();
+  const { pointer, tilt } = useInput();
 
   const count = fidelity.crowdCount;
 
@@ -76,6 +78,10 @@ export function Crowd({ fidelity }: { fidelity: Fidelity }) {
 
     const mat = mesh.current.material as THREE.MeshBasicMaterial;
     mat.opacity = 0.1 + surge * 0.26;
+    const inputX = fidelity.parallax ? pointer.current.x + tilt.current.x : 0;
+    const inputY = fidelity.parallax ? pointer.current.y + tilt.current.y : 0;
+    mesh.current.position.x = inputX * -0.14;
+    mesh.current.position.y = inputY * -0.14;
   });
 
   return (

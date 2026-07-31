@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { usePressure } from "@/components/PressureProvider";
 import { vesselFragmentShader, vesselVertexShader } from "@/lib/shaders/vessel";
 import type { Fidelity } from "@/lib/fidelity";
+import { useInput } from "@/components/InputProvider";
 
 /**
  * The hero object: the prize pool as a pressure vessel.
@@ -17,6 +18,7 @@ export function Vessel({ fidelity }: { fidelity: Fidelity }) {
   const material = useRef<THREE.ShaderMaterial>(null);
   const group = useRef<THREE.Group>(null);
   const { live, playerPulse } = usePressure();
+  const { pointer, tilt, scrollVelocity } = useInput();
 
   const uniforms = useMemo(
     () => ({
@@ -78,7 +80,13 @@ export function Vessel({ fidelity }: { fidelity: Fidelity }) {
     if (group.current) {
       // A slow drift so the silhouette keeps revealing new facets.
       group.current.rotation.y += delta * 0.075;
-      group.current.rotation.x = Math.sin(u.uTime.value * 0.21) * 0.08;
+      const inputX = fidelity.parallax ? pointer.current.x + tilt.current.x : 0;
+      const inputY = fidelity.parallax ? pointer.current.y + tilt.current.y : 0;
+      group.current.rotation.x = Math.sin(u.uTime.value * 0.21) * 0.08 + inputY * 0.06;
+      group.current.rotation.z = -inputX * 0.06;
+      const squash = fidelity.parallax ? Math.min(0.03, Math.abs(scrollVelocity.current) * 0.03) : 0;
+      const xz = 1 / Math.sqrt(1 - squash);
+      group.current.scale.set(scale * xz, scale * (1 - squash), scale * xz);
     }
   });
 
