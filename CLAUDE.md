@@ -22,7 +22,7 @@ Fetched from `https://pumpgame.ir/`:
 - **Locale**: `<html lang="fa-IR" dir="rtl" translate="no">` — `translate="no"` is deliberate; keep it
 - **Positioning**: entertainment platform — games, competition, fun content, large weekly prizes. OG copy also references a Pump *app*, so mobile is part of the story
 - **Type**: IRANYekanX variable font, self-hosted `.woff2`
-- **Palette**: `#ed077b` (magenta/pink, primary), `#8b58da` (purple), `#1a000b` (near-black, red-tinted), `#000000`. `theme-color` is `#000000` — it is a dark-first design
+- **Palette**: brand magenta is **`#f42a8f`** (`primary-500`), on an **inverted dark scale** where `50` is darkest and `950` lightest. `theme-color` is `#000000` — dark-first. See `DESIGN.md` for the full 200+ token set; do not eyeball colors from the rendered page. (`#ed077b` and `#8b58da` appear in the live hero as off-token hex literals — they are *not* brand values.)
 - **Routes**: `/`, `/guides`, `/weekly/leaderboard`, `/terms`, `/licenses`
 
 ## Hard constraints
