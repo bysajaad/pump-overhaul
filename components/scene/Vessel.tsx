@@ -34,18 +34,26 @@ export function Vessel({ fidelity }: { fidelity: Fidelity }) {
   );
 
   /**
-   * Fit to the smaller viewport dimension.
+   * Fit to the smaller screen dimension, measured at a FIXED reference distance.
    *
-   * A fixed scale is wrong here: `fov` is vertical, so on a narrow portrait
-   * viewport the horizontal field is far tighter and a radius-1 sphere swallows
-   * the screen. Sizing against min(width, height) in world units keeps the
-   * vessel a hero on desktop and still leaves the copy readable on a phone.
+   * Two traps here. First, `fov` is vertical, so on a narrow portrait viewport
+   * the horizontal field is far tighter and an unscaled radius-1 sphere swallows
+   * the screen — hence sizing against min(width, height).
+   *
+   * Second, `useThree().viewport` is derived from the camera's current distance
+   * to the origin, so using it would make the vessel visibly grow and shrink as
+   * the camera rig flies. Deriving the frame from canvas aspect at a constant
+   * reference distance keeps the object a fixed physical size in the world,
+   * which is what lets the camera move around it convincingly.
    */
-  const { viewport } = useThree();
-  const scale = useMemo(
-    () => (0.66 * Math.min(viewport.width, viewport.height)) / 2,
-    [viewport.width, viewport.height],
-  );
+  const size = useThree((s) => s.size);
+  const scale = useMemo(() => {
+    const REF_DISTANCE = 4.2; // matches the rig's opening pose
+    const FOV_DEG = 42;
+    const frameHeight = 2 * Math.tan((FOV_DEG / 2) * THREE.MathUtils.DEG2RAD) * REF_DISTANCE;
+    const frameWidth = frameHeight * (size.width / Math.max(1, size.height));
+    return (0.66 * Math.min(frameWidth, frameHeight)) / 2;
+  }, [size.width, size.height]);
 
   // Detail drives the voxel silhouette: too few segments and quantization has
   // nothing to bite on, so this scales with fidelity rather than being fixed.

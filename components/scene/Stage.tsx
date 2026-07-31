@@ -6,6 +6,9 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { Vessel } from "./Vessel";
 import { Crowd } from "./Crowd";
+import { Path } from "./Path";
+import { Podium } from "./Podium";
+import { CameraRig } from "./CameraRig";
 import { resolveFidelity, HIGH_FIDELITY, type Fidelity } from "@/lib/fidelity";
 
 /**
@@ -48,7 +51,10 @@ export function Stage() {
 
         {ready && (
           <>
+            <CameraRig fidelity={fidelity} />
             <Vessel fidelity={fidelity} />
+            <Path />
+            <Podium />
             <Crowd fidelity={fidelity} />
           </>
         )}
