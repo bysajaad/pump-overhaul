@@ -61,6 +61,8 @@ export function CameraRig({ fidelity }: { fidelity: Fidelity }) {
 
   const targetPos = useMemo(() => new THREE.Vector3(), []);
   const targetLook = useMemo(() => new THREE.Vector3(), []);
+  /** Damped scroll-flight pose — parallax is layered on top, never damped. */
+  const basePos = useRef<THREE.Vector3 | null>(null);
   const currentLook = useRef(new THREE.Vector3(0, 0, 0));
   const currentRoll = useRef(0);
 
@@ -87,20 +89,26 @@ export function CameraRig({ fidelity }: { fidelity: Fidelity }) {
       THREE.MathUtils.lerp(a.look[2], b.look[2], local),
     );
 
-    if (fidelity.parallax) {
-      const x = THREE.MathUtils.clamp(pointer.current.x + tilt.current.x, -1, 1);
-      const y = THREE.MathUtils.clamp(pointer.current.y + tilt.current.y, -1, 1);
-      targetPos.x += x * 0.35;
-      targetPos.y += y * 0.35;
-      targetLook.x += x * 0.08;
-      targetLook.y += y * 0.08;
-    }
-
-    // Frame-rate independent damping.
+    // Frame-rate independent damping for the scroll flight only.
     const k = 1 - Math.exp(-delta * 3.4);
-    camera.position.lerp(targetPos, k);
+    if (!basePos.current) basePos.current = camera.position.clone();
+    basePos.current.lerp(targetPos, k);
+    camera.position.copy(basePos.current);
+
+    // Parallax is applied undamped on top of the flight pose: the input refs
+    // are already smoothed in InputProvider, and routing device motion through
+    // a second low-pass here made the scene feel a beat behind the hand.
+    const x = fidelity.parallax ? THREE.MathUtils.clamp(pointer.current.x + tilt.current.x, -1, 1) : 0;
+    const y = fidelity.parallax ? THREE.MathUtils.clamp(pointer.current.y + tilt.current.y, -1, 1) : 0;
+    camera.position.x += x * 0.45;
+    camera.position.y += y * 0.45;
+
     currentLook.current.lerp(targetLook, k);
-    camera.lookAt(currentLook.current);
+    camera.lookAt(
+      currentLook.current.x + x * 0.14,
+      currentLook.current.y + y * 0.14,
+      currentLook.current.z,
+    );
     if (camera instanceof THREE.PerspectiveCamera) {
       const targetFov = 42 + (fidelity.parallax ? Math.min(1, Math.abs(scrollVelocity.current)) * 1.5 : 0);
       camera.fov += (targetFov - camera.fov) * k;

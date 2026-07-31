@@ -4,18 +4,16 @@ import { writeFile, mkdir } from "node:fs/promises";
 import { PNG } from "pngjs";
 
 const ROOT = new URL("../", import.meta.url);
+// The DOM header uses the exact production wordmark PNG (gitignored local
+// asset), so only the 3D scene mark still needs an occupancy trace.
 const ASSETS = [
   {
     name: "logo",
     url: "https://pumpgame.ir/images/landing/pump-logo.png",
-    width: 20,
-    height: 14,
-  },
-  {
-    name: "wordmark",
-    url: "https://pumpgame.ir/images/branding/word-mark.png",
-    width: 52,
-    height: 14,
+    // ~1.9:1 source aspect; dense enough that the stepped silhouette survives
+    // quantization instead of reading as a blob.
+    width: 40,
+    height: 21,
   },
 ];
 

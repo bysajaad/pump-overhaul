@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-31T21:35:03.724Z",
-  "cost": 4.352443500000001,
+  "generatedAt": "2026-07-31T22:42:10.951Z",
+  "cost": 6.2724435,
   "notes": [
     "One additional poster request completed before a local WebP conversion failure; its provider cost was not returned to the manifest and is excluded from the recorded total.",
     "Two Veo fallback attempts were rejected during visual review because they ignored the supplied composition. Their combined cost remains included; the accepted fallback-loop.mp4 is a seamless local motion pass derived from the approved AI poster.",
@@ -149,6 +149,27 @@
       "model": "google/veo-3.1-lite",
       "prompt": "Locked camera, pure black background. One centered golden voxel bottle-cap coin with an embossed stepped voxel Persian letter پ on its face rotates slowly in place through exactly one full turn, soft magenta rim light, gentle gold glints, isolated effect, first and last frame must match for a perfect seamless loop, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
       "date": "2026-07-31T21:10:18.874Z",
+      "cost": 0.64
+    },
+    "hero-loop": {
+      "kind": "video",
+      "model": "google/veo-3.1-lite",
+      "prompt": "Use the supplied image as an exact locked composition. Static camera, no zoom, no cuts. The treasure mound of gold coins, gems and crown on its golden pedestal stays exactly in place. Only ambient life: the magenta spotlights from above shimmer very gently, a few coins catch soft glints that travel slowly, faint golden dust motes drift upward. Subtle, premium, calm. First and last frame must match for a perfect seamless loop.",
+      "date": "2026-07-31T22:38:57.385Z",
+      "cost": 0.64
+    },
+    "eth-loop": {
+      "kind": "video",
+      "model": "google/veo-3.1-lite",
+      "prompt": "Use the supplied image as an exact locked composition on a solid very dark magenta background #16040d. Static camera. The purple Ethereum coin with its white crystal mark floats almost imperceptibly up and down, the glossy green up-arrow and red down-arrow gently pulse with soft light, tiny sparkles drift. No rotation, no morphing, no new objects. First and last frame must match for a perfect seamless loop.",
+      "date": "2026-07-31T22:40:34.604Z",
+      "cost": 0.64
+    },
+    "footpump-loop": {
+      "kind": "video",
+      "model": "google/veo-3.1-lite",
+      "prompt": "Use the supplied image as an exact locked composition on a solid very dark magenta background #16040d. Static camera. The two glowing football player cards facing each other with the VS emblem between them stay in place; only the magenta energy glow between them breathes slowly, soft light sweeps gently across the card surfaces, tiny particles drift. No morphing of faces, no new objects. First and last frame must match for a perfect seamless loop.",
+      "date": "2026-07-31T22:42:10.951Z",
       "cost": 0.64
     }
   }

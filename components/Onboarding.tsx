@@ -9,18 +9,15 @@ import { haptic } from "@/lib/haptics";
 import { assetPath } from "@/lib/base-path";
 import { Smartphone, Vibrate, Volume2 } from "@/components/icons";
 
-const ONBOARDED_KEY = "pump:onboarded";
-
 /**
- * First-visit permission gate.
+ * Permission gate, shown on every load (this is a prototype — the choice is
+ * deliberately not persisted).
  *
  * Three capabilities need a user gesture before the page can come alive:
  * audio (autoplay policy), device orientation (iOS permission), and haptics
  * (implicit). Rather than asking later at awkward moments — or never asking
  * and leaving mobile parallax dead — the onboarding asks once, up front, and
- * explains why sound is half the experience. The choice persists; a "full"
- * choice re-arms on the next visit's first tap (autoplay needs a gesture per
- * page load, not per lifetime).
+ * explains why sound is half the experience.
  */
 export function Onboarding() {
   const { enter, sfx } = useAudio();
@@ -30,25 +27,8 @@ export function Onboarding() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    const previous = window.localStorage.getItem(ONBOARDED_KEY);
-    if (previous === "full") {
-      // Autoplay policy requires a fresh gesture per load; arm on the first
-      // touch anywhere and restore the full experience without asking again.
-      const rearm = () => {
-        window.removeEventListener("pointerdown", rearm);
-        void enter(true).then(() => sfx("coin", { gain: 0.4 }));
-        void requestTiltPermission();
-      };
-      window.addEventListener("pointerdown", rearm, { passive: true });
-      setMode("hidden");
-      return () => window.removeEventListener("pointerdown", rearm);
-    }
-    if (previous === "mute") {
-      setMode("hidden");
-      return;
-    }
     setMode("show");
-  }, [enter, sfx]);
+  }, []);
 
   const begin = async (withSound: boolean) => {
     if (busy) return;
@@ -62,7 +42,6 @@ export function Onboarding() {
       window.setTimeout(calibrateTilt, 350);
       haptic("commit");
       if (withSound) sfx("win", { gain: 0.6 });
-      window.localStorage.setItem(ONBOARDED_KEY, withSound ? "full" : "mute");
       setMode("hidden");
     } finally {
       setBusy(false);
@@ -89,6 +68,11 @@ export function Onboarding() {
             exit={{ opacity: 0, y: -16, scale: 0.98 }}
             transition={{ duration: 0.5, ease: [0.87, 0, 0.13, 1] }}
           >
+            <img
+              src={assetPath("/media/original/word-mark.png")}
+              alt="پامپ"
+              className="mx-auto mb-3 h-9 w-auto"
+            />
             {videoOk && (
               <div className="mx-auto size-24 overflow-hidden rounded-full border border-glass-white-10">
                 <video
@@ -147,9 +131,9 @@ export function Onboarding() {
 
             <div className="mt-5 grid grid-cols-3 gap-2">
               {[
-                { src: "/media/img-gamepad.webp", alt: "دستهٔ بازی ووکسل" },
-                { src: "/media/img-treasure.webp", alt: "گنج ووکسل" },
-                { src: "/media/img-users.webp", alt: "جمعیت ووکسل" },
+                { src: "/media/original/pumps-coin.png", alt: "سکهٔ پامپز" },
+                { src: "/media/original/hero-3.png", alt: "تپهٔ گنج طلایی با تاج" },
+                { src: "/media/original/steps/25.png", alt: "بزرگترین پلهٔ جایزه" },
               ].map((img) => (
                 <img
                   key={img.src}

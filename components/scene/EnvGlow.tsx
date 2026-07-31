@@ -40,7 +40,7 @@ export function EnvGlow({ fidelity }: { fidelity: Fidelity }) {
   if (!texture) return null;
   return (
     <sprite ref={sprite} position={[0, 0, -13]} scale={[22, 12, 1]}>
-      <spriteMaterial map={texture} transparent opacity={0.45} depthWrite={false} toneMapped={false} />
+      <spriteMaterial map={texture} transparent opacity={0.6} depthWrite={false} toneMapped={false} />
     </sprite>
   );
 }

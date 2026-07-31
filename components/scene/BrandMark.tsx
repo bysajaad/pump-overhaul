@@ -16,7 +16,8 @@ export function BrandMark({ fidelity }: { fidelity: Fidelity }) {
   const { pointer, tilt } = useInput();
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const color = useMemo(() => new THREE.Color(), []);
-  const geometry = useMemo(() => new RoundedBoxGeometry(0.16, 0.16, 0.13, 2, 0.025), []);
+  // Pitch tracks the trace density (40×21) so the mark keeps its world size.
+  const geometry = useMemo(() => new RoundedBoxGeometry(0.078, 0.078, 0.06, 2, 0.014), []);
 
   useEffect(() => {
     if (!mesh.current) return;
@@ -24,9 +25,9 @@ export function BrandMark({ fidelity }: { fidelity: Fidelity }) {
       CELLS.forEach((cell, index) => {
         const i = layer * CELLS.length + index;
         dummy.position.set(
-          (cell.x - MAP[0].length / 2) * 0.145 + layer * 0.035,
-          (MAP.length / 2 - cell.y) * 0.145,
-          layer * -0.09,
+          (cell.x - MAP[0].length / 2) * 0.072 + layer * 0.017,
+          (MAP.length / 2 - cell.y) * 0.072,
+          layer * -0.05,
         );
         dummy.updateMatrix();
         mesh.current!.setMatrixAt(i, dummy.matrix);

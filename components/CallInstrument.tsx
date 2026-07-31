@@ -51,10 +51,10 @@ export function CallInstrument() {
           >
             <div className="mt-4 flex items-center gap-3">
               <img
-                src={assetPath("/media/img-arrows.webp")}
-                alt="نشانه‌های بالا و پایین"
+                src={assetPath("/media/original/bitcoin-up-down.png")}
+                alt="سکهٔ اتریوم با نشانه‌های بالا و پایین"
                 loading="lazy"
-                className="size-10 shrink-0 rounded-xl border border-glass-white-10 object-cover"
+                className="size-12 shrink-0 rounded-xl border border-glass-white-10 object-cover"
               />
               <p className="text-sm text-neutral-850">
                 تا ۳۰ ثانیهٔ آینده قیمت بالا می‌رود یا پایین می‌آید؟

@@ -64,8 +64,12 @@ export function InputProvider({ children }: { children: ReactNode }) {
         tiltBaseline.current = { beta: event.beta, gamma: event.gamma };
       }
       const base = tiltBaseline.current;
-      tiltTarget.current.x = Math.max(-1, Math.min(1, (event.gamma - base.gamma) / 25));
-      tiltTarget.current.y = Math.max(-1, Math.min(1, -((event.beta - base.beta) / 25)));
+      // Sensor noise on a resting phone is ~±1°; a small deadzone keeps a
+      // steady hand from shimmering the scene without eating real movement.
+      const DEADZONE = 1.2;
+      const dz = (v: number) => (Math.abs(v) < DEADZONE ? 0 : v - Math.sign(v) * DEADZONE);
+      tiltTarget.current.x = Math.max(-1, Math.min(1, dz(event.gamma - base.gamma) / 20));
+      tiltTarget.current.y = Math.max(-1, Math.min(1, -(dz(event.beta - base.beta) / 20)));
     };
     const grantTilt = () => {
       if (tiltGranted.current) return;
@@ -88,16 +92,19 @@ export function InputProvider({ children }: { children: ReactNode }) {
     const tick = (now: number) => {
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
+      // Two smoothing speeds: pointer/scroll stay cinematic, tilt tracks the
+      // hand almost 1:1 — device movement must feel attached, not queued.
       const k = 1 - Math.exp(-dt * 7);
+      const kTilt = 1 - Math.exp(-dt * 16);
       const disabled = reducedMotion.current;
       pointer.current.x += ((disabled ? 0 : pointerTarget.current.x) - pointer.current.x) * k;
       pointer.current.y += ((disabled ? 0 : pointerTarget.current.y) - pointer.current.y) * k;
-      tilt.current.x += ((disabled ? 0 : tiltTarget.current.x) - tilt.current.x) * k;
-      tilt.current.y += ((disabled ? 0 : tiltTarget.current.y) - tilt.current.y) * k;
+      tilt.current.x += ((disabled ? 0 : tiltTarget.current.x) - tilt.current.x) * kTilt;
+      tilt.current.y += ((disabled ? 0 : tiltTarget.current.y) - tilt.current.y) * kTilt;
       scrollVelocity.current += ((disabled ? 0 : velocityTarget.current) - scrollVelocity.current) * k;
       velocityTarget.current *= Math.exp(-dt * 8);
-      document.documentElement.style.setProperty("--par-x", `${(pointer.current.x + tilt.current.x) * 5}px`);
-      document.documentElement.style.setProperty("--par-y", `${(pointer.current.y + tilt.current.y) * -5}px`);
+      document.documentElement.style.setProperty("--par-x", `${(pointer.current.x + tilt.current.x) * 8}px`);
+      document.documentElement.style.setProperty("--par-y", `${(pointer.current.y + tilt.current.y) * -8}px`);
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);

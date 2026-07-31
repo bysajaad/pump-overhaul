@@ -91,7 +91,15 @@ export function resolveFidelity(): Fidelity {
   }
 
   const cores = navigator.hardwareConcurrency ?? 4;
-  return cores <= 4 ? LOW : HIGH;
+  if (cores <= 4) return LOW;
+
+  // iPhones report 6+ cores and would take the full HIGH tier, but a 3x
+  // Retina canvas at dpr 2 plus bloom is a thermal trap on Safari. Cap the
+  // pixel ratio — visually indistinguishable from 2 on a phone, much cooler.
+  const ios =
+    /iP(hone|ad|od)/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  return ios ? { ...HIGH, dpr: [1, 1.6] } : HIGH;
 }
 
 export { HIGH as HIGH_FIDELITY, LOW as LOW_FIDELITY, NONE as NO_WEBGL_FIDELITY };

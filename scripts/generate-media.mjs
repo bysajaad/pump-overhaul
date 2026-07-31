@@ -10,7 +10,10 @@ const requested = process.argv.find((arg) => arg.startsWith("--asset="))?.split(
 const kindFilter = process.argv.find((arg) => arg.startsWith("--kind="))?.split("=")[1];
 const resumeId = process.argv.find((arg) => arg.startsWith("--resume="))?.split("=")[1];
 const STYLE = "soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters";
-const MAX_COST = 8;
+// Original Pump rasters live in public/media/original (gitignored); seeds for
+// the animated illustration loops reference them directly.
+const ORIGINALS = resolve("public/media/original");
+const MAX_COST = 16;
 
 if (!KEY) throw new Error("OPENROUTER_API_KEY is required. Run with node --env-file=.env.local scripts/generate-media.mjs");
 
@@ -37,6 +40,22 @@ const assets = [
   // Animated brand member: the bottle-cap coin, turning. Used as a decorative
   // DOM loop (mix-blend-screen drops the black over glass) on the onboarding.
   { name: "coin-spin", kind: "video", seconds: 5, prompt: `Locked camera, pure black background. One centered golden voxel bottle-cap coin with an embossed stepped voxel Persian letter پ on its face rotates slowly in place through exactly one full turn, soft magenta rim light, gentle gold glints, isolated effect, first and last frame must match for a perfect seamless loop, ${STYLE}` },
+
+  // -- Animated originals (2026-08-01 run) ------------------------------------
+  // The live site's own illustrations, brought to motion. Each is seeded from
+  // the production raster so composition stays exact; the animation is only
+  // light and idle movement. Used as looping DOM videos in the overlay cards.
+  {
+    name: "hero-loop", kind: "video", seconds: 6, seed: `${ORIGINALS}/hero-3.png`,
+    prompt: "Use the supplied image as an exact locked composition. Static camera, no zoom, no cuts. The treasure mound of gold coins, gems and crown on its golden pedestal stays exactly in place. Only ambient life: the magenta spotlights from above shimmer very gently, a few coins catch soft glints that travel slowly, faint golden dust motes drift upward. Subtle, premium, calm. First and last frame must match for a perfect seamless loop.",
+  },
+  {
+    name: "eth-loop", kind: "video", seconds: 5, seed: `${ORIGINALS}/eth-seed-1k.png`,
+    prompt: "Use the supplied image as an exact locked composition on a solid very dark magenta background #16040d. Static camera. The purple Ethereum coin with its white crystal mark floats almost imperceptibly up and down, the glossy green up-arrow and red down-arrow gently pulse with soft light, tiny sparkles drift. No rotation, no morphing, no new objects. First and last frame must match for a perfect seamless loop.",
+  },
+  // NOTE: no footpump loop — the original art is two real footballers, and
+  // video models either filter the likeness prompt or hallucinate stand-ins.
+  // That card ships the static production raster instead.
 
   // -- Audio (Lyria 3 clip, 30 s @ 48 kHz mp3, $0.04 per clip) ----------------
   // Music gets a crossfade-loop pass; effects get onset-trimmed and faded so
@@ -142,8 +161,9 @@ async function video(asset) {
   const model = "google/veo-3.1-lite";
   const body = { model, prompt: asset.prompt, seconds: asset.seconds };
   if (asset.seed) {
-    const poster = await readFile(resolve(OUT, "poster-hero.webp"));
-    body.image = `data:image/webp;base64,${poster.toString("base64")}`;
+    // `true` seeds from the generated poster; a string seeds from that file.
+    const seedPath = asset.seed === true ? resolve(OUT, "poster-hero.webp") : asset.seed;
+    body.image = `data:image/${seedPath.endsWith(".webp") ? "webp" : "png"};base64,${(await readFile(seedPath)).toString("base64")}`;
   }
   let task;
   if (resumeId) {

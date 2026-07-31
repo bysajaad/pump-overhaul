@@ -76,6 +76,17 @@ export function Stage() {
       >
         <color attach="background" args={["#16040d"]} />
 
+        {/* Light rig. The vessel is a custom shader and the crowd/path are
+            unlit basic materials, but the treasure gold, coins, and brand mark
+            are standard materials — without lights they render as black
+            silhouettes. Key from upper right (never mirrored for RTL), a
+            magenta kiss from the vessel's side, and a warm bounce low where
+            the treasure sits. */}
+        <ambientLight intensity={0.5} color="#8a3a66" />
+        <directionalLight position={[4, 6, 3]} intensity={2.2} color="#ffe3f1" />
+        <pointLight position={[-2.5, 1.5, 2.5]} intensity={12} distance={12} decay={1.8} color="#f42a8f" />
+        <pointLight position={[0, -2.4, 1.8]} intensity={8} distance={9} decay={1.8} color="#ffbb00" />
+
         {ready && (
           <>
             <CameraRig fidelity={fidelity} />

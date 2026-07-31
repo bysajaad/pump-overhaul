@@ -71,6 +71,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const BEATS = 6;
     let lastTick = 0;
+    let lastBuzz = 0;
     let lastProgress = progress.current;
     let frame = 0;
     const tick = (now: number) => {
@@ -82,10 +83,19 @@ export function AudioProvider({ children }: { children: ReactNode }) {
           rate: 1 + Math.min(0.5, v * 0.3),
         });
       }
+      // Scroll haptics: a faint detent feel while the page moves. iOS drops
+      // toggles faster than ~50 ms apart, so the haptic channel gets its own
+      // slower gate than the sound channel, and only fires at real fling
+      // speeds — a slow read should be silent to the hand.
+      if (v > 0.3 && now - lastBuzz > 140) {
+        lastBuzz = now;
+        haptic("tick");
+      }
       const p = progress.current;
       const crossed = Math.floor(p * BEATS) !== Math.floor(lastProgress * BEATS);
       if (crossed && v > 0.02) {
         engine.sfx("whoosh", { gain: 0.2, rate: 1 + Math.min(0.3, v * 0.2) });
+        haptic("tap");
       }
       lastProgress = p;
       frame = requestAnimationFrame(tick);

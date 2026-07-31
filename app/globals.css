@@ -142,6 +142,8 @@
 html {
   background: var(--color-neutral-black);
   color: var(--color-neutral-900);
+  /* In-page anchors (game card → instrument) glide rather than jump. */
+  scroll-behavior: smooth;
 }
 
 /* Body must stay transparent: the fixed WebGL stage sits behind the overlay,
@@ -155,6 +157,15 @@ body {
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  /* iOS polish: no grey flash on taps, no auto text resizing in landscape. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Kills the 300 ms tap delay and double-tap-zoom gesture on iOS controls. */
+button,
+a {
+  touch-action: manipulation;
 }
 
 /* Persian joining forms break under tracking changes — never letter-space fa. */
@@ -168,13 +179,26 @@ canvas {
   touch-action: none;
 }
 
+/* Notched iPhone chrome: header clears the sensor housing, footer the home
+   indicator. viewport-fit=cover makes these envs nonzero. */
+.safe-top {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+.safe-bottom {
+  padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+}
+
+/* No transition here on purpose: the rAF loop already smooths the vars, and a
+   CSS transition would add a trailing ~120 ms of latency to every frame —
+   device movement must read as attached, not queued. */
 .parallax-panel {
   transform: translate3d(var(--par-x), var(--par-y), 0);
-  transition: transform 120ms linear;
+  will-change: transform;
 }
 
 .parallax-header {
   transform: translate3d(calc(var(--par-x) * -1.8), calc(var(--par-y) * -1.8), 0);
+  will-change: transform;
 }
 
 .magnetic {
@@ -183,6 +207,9 @@ canvas {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .parallax-panel,
   .parallax-header,
   .magnetic {
