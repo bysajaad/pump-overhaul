@@ -1,0 +1,18 @@
+node_modules/
+.next/
+out/
+build/
+
+# firecrawl cli cache
+.firecrawl/
+
+# env
+.env*
+!.env.example
+
+# os / editor
+.DS_Store
+*.log
+.vercel
+next-env.d.ts
+tsconfig.tsbuildinfo
