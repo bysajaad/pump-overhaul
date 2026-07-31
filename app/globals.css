@@ -1,0 +1,177 @@
+@import "tailwindcss";
+@import "@fontsource-variable/vazirmatn/index.css";
+
+/* ---------------------------------------------------------------------------
+   Brand tokens, ported from the live pumpgame.ir Tailwind bundle.
+   See DESIGN.md for provenance and the full extracted set.
+
+   The scale is INVERTED for a dark theme: 50 is darkest, 950 lightest.
+   Reading these as stock Tailwind ramps will invert every surface.
+--------------------------------------------------------------------------- */
+@theme {
+  /* -- primary: brand magenta ------------------------------------------- */
+  --color-primary-50: #16040d;
+  --color-primary-100: #30081b;
+  --color-primary-200: #601038;
+  --color-primary-300: #941957;
+  --color-primary-400: #c42173;
+  --color-primary-500: #f42a8f;
+  --color-primary-600: #f655a6;
+  --color-primary-650: #f769b0;
+  --color-primary-700: #f881bd;
+  --color-primary-750: #f995c7;
+  --color-primary-800: #fba7d1;
+  --color-primary-850: #fcc0de;
+  --color-primary-900: #fdd3e7;
+  --color-primary-950: #feecf5;
+
+  /* -- neutral ----------------------------------------------------------- */
+  --color-neutral-50: #0c0d0d;
+  --color-neutral-100: #18191b;
+  --color-neutral-200: #303336;
+  --color-neutral-350: #55595e;
+  --color-neutral-400: #61666b;
+  --color-neutral-550: #878c92;
+  --color-neutral-850: #d7d9db;
+  --color-neutral-900: #e4e5e7;
+  --color-neutral-black: #000;
+  --color-neutral-white: #fff;
+
+  /* -- semantic: green/red drive the up/down call ------------------------ */
+  --color-green-50: #001410;
+  --color-green-100: #00241b;
+  --color-green-300: #007054;
+  --color-green-400: #00946f;
+  --color-green-500: #00b88a;
+  --color-green-600: #33c7a2;
+  --color-green-700: #68d4b9;
+  --color-green-800: #9be4d1;
+
+  --color-red-25: #0c0304;
+  --color-red-50: #190608;
+  --color-red-100: #300d10;
+  --color-red-200: #611920;
+  --color-red-400: #c33241;
+  --color-red-500: #f53d50;
+  --color-red-600: #f76473;
+  --color-red-700: #f98b96;
+  --color-red-800: #fbb1b9;
+
+  --color-blue-500: #266fed;
+  --color-yellow-100: #332500;
+  --color-yellow-500: #ffbb00;
+  --color-yellow-600: #ffc933;
+  --color-yellow-700: #ffd666;
+  --color-yellow-900: #fff1cc;
+
+  /* -- glass: the depth model is alpha-over-dark, not shadow ------------- */
+  --color-glass-black-20: #0003;
+  --color-glass-black-40: #0006;
+  --color-glass-black-60: #0009;
+  --color-glass-white-5: #ffffff0d;
+  --color-glass-white-10: #ffffff1a;
+  --color-glass-white-20: #fff3;
+  --color-glass-white-40: #fff6;
+  --color-glass-white-70: #ffffffb3;
+  --color-glass-primary-10: #f42a8f1a;
+  --color-glass-primary-20: #f42a8f33;
+  --color-glass-primary-30: #f42a8f4d;
+  --color-glass-primary-50: #f42a8f80;
+  --color-glass-primary-80: #f42a8fcc;
+  --color-glass-green-20: #00b88a33;
+  --color-glass-green-60: #00b88a99;
+  --color-glass-red-20: #f53d5033;
+  --color-glass-red-60: #f53d5099;
+
+  /* -- type: no `base` step; the middle is `md` -------------------------- */
+  --text-2xs: 0.625rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 3rem;
+
+  --leading-2xs: 1rem;
+  --leading-xs: 1.25rem;
+  --leading-sm: 1.5rem;
+  --leading-md: 1.75rem;
+  --leading-lg: 2.25rem;
+  --leading-xl: 2.5rem;
+  --leading-2xl: 3rem;
+  --leading-3xl: 3.5rem;
+
+  --font-weight-extralight: 200;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-extrablack: 950;
+
+  /* -- geometry: base unit is 2px, half stock Tailwind ------------------- */
+  --spacing: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-md-nudge: 0.625rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-full: 625rem;
+
+  --blur-xs: 4px;
+  --blur-sm: 8px;
+  --blur-md: 12px;
+  --blur-lg: 16px;
+  --blur-2xl: 40px;
+
+  /* -- motion: their signature ease, kept so the new work reads as Pump -- */
+  --ease-signature: cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+  --stage-bg: var(--color-primary-50);
+}
+
+html {
+  background: var(--color-neutral-black);
+  color: var(--color-neutral-900);
+}
+
+/* Body must stay transparent: the fixed WebGL stage sits behind the overlay,
+   and an opaque background here paints over it (in-flow descendant backgrounds
+   paint after negative/low z-index positioned children). */
+body {
+  background: transparent;
+  /* Vazirmatn stands in for the licensed IRANYekanXVF. See DESIGN.md. */
+  font-family: "Vazirmatn Variable", system-ui, sans-serif;
+  /* Persian needs more leading than Latin at equal size. */
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* Persian joining forms break under tracking changes — never letter-space fa. */
+:lang(fa) {
+  letter-spacing: normal !important;
+}
+
+/* The 3D stage owns the viewport; only the overlay scrolls. */
+canvas {
+  display: block;
+  touch-action: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
