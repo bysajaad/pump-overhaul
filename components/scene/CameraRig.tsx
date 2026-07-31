@@ -3,8 +3,8 @@
 import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { useScrollProgress } from "@/lib/useScrollProgress";
 import type { Fidelity } from "@/lib/fidelity";
+import { useInput } from "@/components/InputProvider";
 
 /**
  * Scroll-driven camera flight.
@@ -35,7 +35,7 @@ interface Keyframe {
  */
 const FLIGHT: Keyframe[] = [
   // Hero: close enough that the vessel is the whole proposition.
-  { at: 0.0, pos: [0, 0, 4.2], look: [0, 0, 0] },
+  { at: 0.0, pos: [0, 0.3, 4.2], look: [0, 0.38, 0] },
   // Copy beats need distance — a near camera makes the vessel swamp the text.
   { at: 0.18, pos: [1.0, 0.4, 5.4], look: [0, 0, 0] },
   // Foot of the path. Far enough out that the helix reads as one continuous
@@ -56,12 +56,13 @@ function ease(t: number): number {
 }
 
 export function CameraRig({ fidelity }: { fidelity: Fidelity }) {
-  const progress = useScrollProgress();
+  const { progress, pointer, tilt, scrollVelocity } = useInput();
   const { camera } = useThree();
 
   const targetPos = useMemo(() => new THREE.Vector3(), []);
   const targetLook = useMemo(() => new THREE.Vector3(), []);
   const currentLook = useRef(new THREE.Vector3(0, 0, 0));
+  const currentRoll = useRef(0);
 
   useFrame((_, delta) => {
     // Reduced motion / low tier: hold the opening pose rather than fly.
@@ -86,11 +87,28 @@ export function CameraRig({ fidelity }: { fidelity: Fidelity }) {
       THREE.MathUtils.lerp(a.look[2], b.look[2], local),
     );
 
+    if (fidelity.parallax) {
+      const x = THREE.MathUtils.clamp(pointer.current.x + tilt.current.x, -1, 1);
+      const y = THREE.MathUtils.clamp(pointer.current.y + tilt.current.y, -1, 1);
+      targetPos.x += x * 0.35;
+      targetPos.y += y * 0.35;
+      targetLook.x += x * 0.08;
+      targetLook.y += y * 0.08;
+    }
+
     // Frame-rate independent damping.
     const k = 1 - Math.exp(-delta * 3.4);
     camera.position.lerp(targetPos, k);
     currentLook.current.lerp(targetLook, k);
     camera.lookAt(currentLook.current);
+    if (camera instanceof THREE.PerspectiveCamera) {
+      const targetFov = 42 + (fidelity.parallax ? Math.min(1, Math.abs(scrollVelocity.current)) * 1.5 : 0);
+      camera.fov += (targetFov - camera.fov) * k;
+      const targetRoll = fidelity.parallax ? -tilt.current.x * THREE.MathUtils.DEG2RAD * 1.5 : 0;
+      currentRoll.current += (targetRoll - currentRoll.current) * k;
+      camera.rotateZ(currentRoll.current);
+      camera.updateProjectionMatrix();
+    }
   });
 
   return null;

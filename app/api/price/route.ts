@@ -11,8 +11,12 @@ import { NextResponse } from "next/server";
  * the entire argument of this concept.
  */
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// ISR preserves the 15-second server cache while allowing the same route to be
+// materialized once during the GitHub Pages static export. The Pages client
+// bypasses that static snapshot and reads upstreams directly with simulation as
+// its final fallback.
+export const dynamic = "force-static";
+export const revalidate = 15;
 
 type Source = "binance" | "coingecko" | "simulated";
 

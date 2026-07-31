@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { usePressure } from "@/components/PressureProvider";
+import { createCoinGeometry } from "@/components/scene/Coin";
+import type { Fidelity } from "@/lib/fidelity";
 
 /**
  * The path to the big prize — 25 steps, the same count the live site ships as
@@ -23,8 +25,9 @@ const RADIUS = 2.6;
 const Y_BOTTOM = -2.4;
 const Y_TOP = 3.4;
 
-export function Path() {
+export function Path({ fidelity }: { fidelity: Fidelity }) {
   const mesh = useRef<THREE.InstancedMesh>(null);
+  const coins = useRef<THREE.InstancedMesh>(null);
   const { live } = usePressure();
 
   // Static layout — computed once, never per frame.
@@ -55,6 +58,7 @@ export function Path() {
   const scratch = useMemo(() => new THREE.Color(), []);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const elapsed = useRef(0);
+  const coinGeometry = useMemo(() => createCoinGeometry(fidelity.coinDetail), [fidelity.coinDetail]);
 
   // Matrices are static; write them once on mount.
   useEffect(() => {
@@ -67,6 +71,16 @@ export function Path() {
       mesh.current!.setMatrixAt(i, dummy.matrix);
     });
     mesh.current.instanceMatrix.needsUpdate = true;
+    if (coins.current) {
+      layout.forEach((s, i) => {
+        dummy.position.copy(s.pos).add(new THREE.Vector3(0, s.scale.y + 0.28, 0));
+        dummy.rotation.set(0, s.rotY, 0);
+        dummy.scale.setScalar(i === STEPS - 1 ? 0.42 : 0.3);
+        dummy.updateMatrix();
+        coins.current!.setMatrixAt(i, dummy.matrix);
+      });
+      coins.current.instanceMatrix.needsUpdate = true;
+    }
   }, [layout, dummy]);
 
   useFrame((_, delta) => {
@@ -85,14 +99,33 @@ export function Path() {
 
       scratch.copy(pending).lerp(reached, THREE.MathUtils.clamp(glow, 0, 1));
       mesh.current.setColorAt(i, scratch);
+      if (coins.current) {
+        scratch.copy(pending).lerp(new THREE.Color("#ffbb00"), THREE.MathUtils.clamp(glow, 0, 1));
+        coins.current.setColorAt(i, scratch);
+        const s = layout[i];
+        dummy.position.copy(s.pos).add(new THREE.Vector3(0, s.scale.y + 0.28, 0));
+        dummy.rotation.set(elapsed.current * (0.35 + frontier * 1.8), s.rotY, Math.PI / 2);
+        dummy.scale.setScalar(i === STEPS - 1 ? 0.42 : 0.3);
+        dummy.updateMatrix();
+        coins.current.setMatrixAt(i, dummy.matrix);
+      }
     }
     if (mesh.current.instanceColor) mesh.current.instanceColor.needsUpdate = true;
+    if (coins.current) {
+      coins.current.instanceMatrix.needsUpdate = true;
+      if (coins.current.instanceColor) coins.current.instanceColor.needsUpdate = true;
+    }
   });
 
   return (
-    <instancedMesh ref={mesh} args={[undefined, undefined, STEPS]} frustumCulled={false}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshBasicMaterial toneMapped={false} />
-    </instancedMesh>
+    <group>
+      <instancedMesh ref={mesh} args={[undefined, undefined, STEPS]} frustumCulled={false}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshBasicMaterial toneMapped={false} />
+      </instancedMesh>
+      <instancedMesh ref={coins} args={[coinGeometry, undefined, STEPS]} frustumCulled={false}>
+        <meshStandardMaterial vertexColors roughness={0.48} metalness={0.08} flatShading />
+      </instancedMesh>
+    </group>
   );
 }

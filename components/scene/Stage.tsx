@@ -9,6 +9,12 @@ import { Crowd } from "./Crowd";
 import { Path } from "./Path";
 import { Podium } from "./Podium";
 import { CameraRig } from "./CameraRig";
+import { BrandMark } from "./BrandMark";
+import { CoinFlip } from "./CoinFlip";
+import { CoinBurst } from "./CoinBurst";
+import { EnvGlow } from "./EnvGlow";
+import { FlipbookEffect } from "./FlipbookEffect";
+import { assetPath } from "@/lib/base-path";
 import { resolveFidelity, HIGH_FIDELITY, type Fidelity } from "@/lib/fidelity";
 
 /**
@@ -31,6 +37,27 @@ export function Stage() {
     setReady(true);
   }, []);
 
+  if (!ready) {
+    return <div className="fixed inset-0 z-0 bg-primary-50" aria-hidden="true" />;
+  }
+
+  if (ready && fidelity.tier === "none") {
+    return (
+      <div className="fixed inset-0 z-0 overflow-hidden bg-primary-50" aria-hidden="true">
+        <video
+          className="size-full object-cover opacity-80"
+          poster={assetPath("/media/poster-hero.webp")}
+          src={assetPath("/media/fallback-loop.mp4")}
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="absolute inset-0 bg-glass-black-20" />
+      </div>
+    );
+  }
+
   return (
     <div
       className="fixed inset-0 z-0"
@@ -52,10 +79,17 @@ export function Stage() {
         {ready && (
           <>
             <CameraRig fidelity={fidelity} />
+            <EnvGlow fidelity={fidelity} />
             <Vessel fidelity={fidelity} />
-            <Path />
-            <Podium />
+            <BrandMark fidelity={fidelity} />
+            <Path fidelity={fidelity} />
+            <Podium fidelity={fidelity} />
             <Crowd fidelity={fidelity} />
+            <CoinFlip fidelity={fidelity} />
+            <CoinBurst fidelity={fidelity} />
+            {fidelity.spriteSheets && (
+              <FlipbookEffect src={assetPath("/media/puff-sheet.webp")} count={2} tint="#f881bd" trigger="surge" />
+            )}
           </>
         )}
 

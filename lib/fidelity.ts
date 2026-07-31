@@ -8,7 +8,7 @@
  * device capability.
  */
 
-export type FidelityTier = "high" | "low";
+export type FidelityTier = "high" | "low" | "none";
 
 export interface Fidelity {
   tier: FidelityTier;
@@ -22,6 +22,16 @@ export interface Fidelity {
   postprocessing: boolean;
   /** Scroll-linked camera movement; off means beats cut instead of fly. */
   cameraOnScroll: boolean;
+  /** Pointer, tilt, and velocity-linked transforms. */
+  parallax: boolean;
+  /** Radial segment count for branded coins. */
+  coinDetail: number;
+  /** Number of coins emitted by a settlement. */
+  burstCount: number;
+  /** AI-generated flipbook effects, when the sheets are present. */
+  spriteSheets: boolean;
+  /** Haptics follow motion preference even though unsupported browsers ignore them. */
+  haptics: boolean;
 }
 
 const HIGH: Fidelity = {
@@ -31,6 +41,11 @@ const HIGH: Fidelity = {
   vesselDetail: 128,
   postprocessing: true,
   cameraOnScroll: true,
+  parallax: true,
+  coinDetail: 24,
+  burstCount: 40,
+  spriteSheets: true,
+  haptics: true,
 };
 
 const LOW: Fidelity = {
@@ -40,6 +55,18 @@ const LOW: Fidelity = {
   vesselDetail: 48,
   postprocessing: false,
   cameraOnScroll: false,
+  parallax: true,
+  coinDetail: 16,
+  burstCount: 12,
+  spriteSheets: false,
+  haptics: true,
+};
+
+const NONE: Fidelity = {
+  ...LOW,
+  tier: "none",
+  parallax: false,
+  haptics: false,
 };
 
 /**
@@ -53,11 +80,18 @@ export function resolveFidelity(): Fidelity {
   if (reduced) {
     // Reduced motion is a stated preference, not a capability limit: keep the
     // detail, drop the movement.
-    return { ...HIGH, cameraOnScroll: false };
+    return { ...HIGH, cameraOnScroll: false, parallax: false, haptics: false };
+  }
+
+  try {
+    const canvas = document.createElement("canvas");
+    if (!canvas.getContext("webgl2") && !canvas.getContext("webgl")) return NONE;
+  } catch {
+    return NONE;
   }
 
   const cores = navigator.hardwareConcurrency ?? 4;
   return cores <= 4 ? LOW : HIGH;
 }
 
-export { HIGH as HIGH_FIDELITY, LOW as LOW_FIDELITY };
+export { HIGH as HIGH_FIDELITY, LOW as LOW_FIDELITY, NONE as NO_WEBGL_FIDELITY };

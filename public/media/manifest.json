@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-07-31T13:15:27.438Z",
+  "cost": 2.837088,
+  "notes": [
+    "One additional poster request completed before a local WebP conversion failure; its provider cost was not returned to the manifest and is excluded from the recorded total.",
+    "Two Veo fallback attempts were rejected during visual review because they ignored the supplied composition. Their combined cost remains included; the accepted fallback-loop.mp4 is a seamless local motion pass derived from the approved AI poster."
+  ],
+  "assets": {
+    "poster-hero": {
+      "kind": "image",
+      "model": "google/gemini-3-pro-image",
+      "prompt": "A monumental rounded voxel pressure vessel breathing gently above a mound of gold voxel treasure, cinematic centered composition, ample dark negative space for interface copy, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T13:02:56.878Z",
+      "cost": 0.136984
+    },
+    "env-glow": {
+      "kind": "image",
+      "model": "google/gemini-3-pro-image",
+      "prompt": "A distant atmospheric field of tiny magenta voxel lights and soft volumetric haze, seamless wide environmental backdrop, no foreground objects, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T13:03:29.705Z",
+      "cost": 0.140104
+    },
+    "fallback-loop": {
+      "kind": "video",
+      "model": "local/ffmpeg-from-poster-hero",
+      "sourceModel": "google/gemini-3-pro-image",
+      "rejectedVideoModel": "google/veo-3.1-lite",
+      "rejectedAttempts": 2,
+      "prompt": "Use the supplied image as an exact locked composition. Static camera, no zoom, no assembly, no growth, no transformation, no new objects. Keep the vessel's silhouette and treasure layout unchanged. Only a barely perceptible one-percent breathing pulse and two restrained treasure glints. First and last frame must match for a perfect ambient loop, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T13:15:27.438Z",
+      "cost": 1.28
+    },
+    "puff-src": {
+      "kind": "video",
+      "model": "google/veo-3.1-lite",
+      "prompt": "Locked camera, pure black background. One centered clay smoke puff expands and dissolves completely, isolated effect for a flipbook, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T13:08:25.815Z",
+      "cost": 0.64
+    },
+    "spark-src": {
+      "kind": "video",
+      "model": "google/veo-3.1-lite",
+      "prompt": "Locked camera, pure black background. One centered small gold voxel sparkle pops and dissolves completely, isolated effect for a flipbook, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T13:10:39.202Z",
+      "cost": 0.64
+    }
+  }
+}

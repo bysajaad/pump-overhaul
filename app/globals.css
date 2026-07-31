@@ -135,6 +135,8 @@
 :root {
   color-scheme: dark;
   --stage-bg: var(--color-primary-50);
+  --par-x: 0px;
+  --par-y: 0px;
 }
 
 html {
@@ -164,6 +166,28 @@ body {
 canvas {
   display: block;
   touch-action: none;
+}
+
+.parallax-panel {
+  transform: translate3d(var(--par-x), var(--par-y), 0);
+  transition: transform 120ms linear;
+}
+
+.parallax-header {
+  transform: translate3d(calc(var(--par-x) * -1.8), calc(var(--par-y) * -1.8), 0);
+}
+
+.magnetic {
+  transform: translate3d(var(--mag-x, 0), var(--mag-y, 0), 0);
+  transition: transform 300ms var(--ease-signature);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-panel,
+  .parallax-header,
+  .magnetic {
+    transform: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
