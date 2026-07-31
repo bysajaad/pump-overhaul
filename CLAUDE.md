@@ -109,7 +109,7 @@ That last part is load-bearing. A frozen price makes every call settle "flat", w
 
 ## Known gaps
 
-- The podium is occluded by the stats panel at its intended beat; it only reads mid-flight (~0.4–0.5 scroll).
 - Path steps read as floating platforms more than a connected staircase.
+- The vessel is behind the panel at the crowd beat, since that panel is top-aligned to clear the podium. Acceptable — the beat is about the crowd and the leaderboard — but the composition never shows vessel and podium together.
 - `prefers-reduced-motion` holds the camera's opening pose, but the vessel still breathes.
 - Firecrawl's API was unreachable from this machine, so `DESIGN.md` was extracted by fetching the CSS bundle directly rather than via `firecrawl-website-design-clone`.
