@@ -5,6 +5,7 @@ import { useGame } from "@/components/GameProvider";
 import { Magnetic } from "@/components/Magnetic";
 import { Clock, EthGlyph } from "@/components/icons";
 import { faClock, faDecimal, faNum } from "@/lib/format";
+import { assetPath } from "@/lib/base-path";
 
 /**
  * The playable call.
@@ -48,9 +49,17 @@ export function CallInstrument() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3, ease: [0.87, 0, 0.13, 1] }}
           >
-            <p className="mt-4 text-sm text-neutral-850">
-              تا ۳۰ ثانیهٔ آینده قیمت بالا می‌رود یا پایین می‌آید؟
-            </p>
+            <div className="mt-4 flex items-center gap-3">
+              <img
+                src={assetPath("/media/img-arrows.webp")}
+                alt="نشانه‌های بالا و پایین"
+                loading="lazy"
+                className="size-10 shrink-0 rounded-xl border border-glass-white-10 object-cover"
+              />
+              <p className="text-sm text-neutral-850">
+                تا ۳۰ ثانیهٔ آینده قیمت بالا می‌رود یا پایین می‌آید؟
+              </p>
+            </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Magnetic><button
                 onClick={() => commit("up")}

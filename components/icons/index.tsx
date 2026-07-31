@@ -27,3 +27,7 @@ export const Gamepad = (props: IconProps) => <Icon {...props}><path d="M8 8h8a5 
 export const Gift = (props: IconProps) => <Icon {...props}><path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7H8.5A2.5 2.5 0 1 1 11 4.5ZM12 7h3.5A2.5 2.5 0 1 0 13 4.5Z" /></Icon>;
 export const Clock = (props: IconProps) => <Icon {...props}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></Icon>;
 export const EthGlyph = (props: IconProps) => <Icon {...props}><path d="m12 3-5 9 5 3 5-3-5-9ZM7 13l5 8 5-8-5 3-5-3Z" /></Icon>;
+export const Volume2 = (props: IconProps) => <Icon {...props}><path d="M11 5 6.5 9H3v6h3.5L11 19V5Z" /><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7.5 7.5 0 0 1 0 10" /></Icon>;
+export const VolumeX = (props: IconProps) => <Icon {...props}><path d="M11 5 6.5 9H3v6h3.5L11 19V5Z" /><path d="m15.5 9.5 5 5m0-5-5 5" /></Icon>;
+export const Smartphone = (props: IconProps) => <Icon {...props}><rect x="7" y="3" width="10" height="18" rx="2.5" /><path d="M11 17.5h2" /></Icon>;
+export const Vibrate = (props: IconProps) => <Icon {...props}><rect x="8" y="4" width="8" height="16" rx="2.5" /><path d="M4 9v6M20 9v6M1.5 10.5v3M22.5 10.5v3" /></Icon>;

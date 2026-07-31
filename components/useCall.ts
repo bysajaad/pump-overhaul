@@ -12,7 +12,6 @@ import {
 } from "@/lib/game";
 import { usePressure } from "@/components/PressureProvider";
 import { requestTiltPermission } from "@/lib/useTiltPermission";
-import { resolveFidelity } from "@/lib/fidelity";
 import { assetPath } from "@/lib/base-path";
 
 interface PriceReading {
@@ -94,11 +93,6 @@ export function useCall(): CallController & { eventsRef: React.RefObject<SceneGa
   const { injectPlay } = usePressure();
   const eventsRef = useRef<SceneGameEvent[]>([]);
   const previousPhase = useRef(state.phase);
-  const haptics = useRef(true);
-
-  useEffect(() => {
-    haptics.current = resolveFidelity().haptics;
-  }, []);
 
   // Latest price without re-subscribing timers on every tick.
   const priceRef = useRef<PriceReading | null>(null);
@@ -154,9 +148,6 @@ export function useCall(): CallController & { eventsRef: React.RefObject<SceneGa
   useEffect(() => {
     if (state.phase === "settled" && previousPhase.current !== "settled" && state.call?.outcome) {
       eventsRef.current.push({ type: "settle", at: performance.now(), outcome: state.call.outcome });
-      if (haptics.current && state.call.outcome === "correct") {
-        navigator.vibrate?.([20, 40, 20]);
-      }
     }
     previousPhase.current = state.phase;
   }, [state.phase, state.call]);
@@ -172,7 +163,6 @@ export function useCall(): CallController & { eventsRef: React.RefObject<SceneGa
       // the vessel must react in the same instant the button is pressed.
       injectPlay(1);
       void requestTiltPermission();
-      if (haptics.current) navigator.vibrate?.(15);
     },
     [state.phase, injectPlay],
   );

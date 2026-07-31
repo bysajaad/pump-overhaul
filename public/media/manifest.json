@@ -1,9 +1,11 @@
 {
-  "generatedAt": "2026-07-31T13:15:27.438Z",
-  "cost": 2.837088,
+  "generatedAt": "2026-07-31T21:35:03.724Z",
+  "cost": 4.352443500000001,
   "notes": [
     "One additional poster request completed before a local WebP conversion failure; its provider cost was not returned to the manifest and is excluded from the recorded total.",
-    "Two Veo fallback attempts were rejected during visual review because they ignored the supplied composition. Their combined cost remains included; the accepted fallback-loop.mp4 is a seamless local motion pass derived from the approved AI poster."
+    "Two Veo fallback attempts were rejected during visual review because they ignored the supplied composition. Their combined cost remains included; the accepted fallback-loop.mp4 is a seamless local motion pass derived from the approved AI poster.",
+    "2026-08-01: two music-ambient renders produced empty output during local loop post-processing (acrossfade starves on mp3 trims near the bitrate-estimated EOF); their $0.08 remains in the recorded total. The accepted loop uses envelope+amix blending in the WAV domain.",
+    "2026-08-01: sfx-coin's first stream returned no audio payload and was retried at no extra charge. The recorded music-ambient cost covers three Lyria renders, two of which failed locally."
   ],
   "assets": {
     "poster-hero": {
@@ -42,6 +44,111 @@
       "model": "google/veo-3.1-lite",
       "prompt": "Locked camera, pure black background. One centered small gold voxel sparkle pops and dissolves completely, isolated effect for a flipbook, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
       "date": "2026-07-31T13:10:39.202Z",
+      "cost": 0.64
+    },
+    "music-ambient": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Dark luxurious ambient electronic background music, deep warm sub bass pulse around 90 BPM, soft shimmering analog synth pads, sparse gentle plucky arpeggio, calm premium lounge atmosphere, hypnotic seamless repetition, no vocals, no drums, no percussion, no risers, no drops, constant energy with no climax",
+      "date": "2026-07-31T21:35:03.724Z",
+      "cost": 0.04
+    },
+    "sfx-commit": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Minimal sound design study: one deep soft sub bass pluck note repeated sparsely every three seconds with long gaps of near silence, warm rounded attack, premium interface feedback feel, no melody, no drums, no vocals",
+      "date": "2026-07-31T21:04:35.565Z",
+      "cost": 0.04
+    },
+    "sfx-coin": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Minimal sound design study: one bright tiny golden coin chime, a delicate metallic clink repeated sparsely every three seconds with long gaps of near silence, premium interface feedback feel, no melody, no drums, no vocals",
+      "date": "2026-07-31T21:06:53.827Z",
+      "cost": 0.04
+    },
+    "sfx-tick": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Minimal sound design study: one tiny warm wooden tick click, soft and dry, repeated sparsely every two seconds with long gaps of near silence, subtle interface scroll feedback feel, no melody, no drums, no vocals",
+      "date": "2026-07-31T21:07:04.275Z",
+      "cost": 0.04
+    },
+    "sfx-whoosh": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Minimal sound design study: one gentle airy whoosh sweeping softly, repeated sparsely every four seconds with long gaps of near silence, smooth premium transition feel, no melody, no drums, no vocals",
+      "date": "2026-07-31T21:07:15.064Z",
+      "cost": 0.04
+    },
+    "sfx-win": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Minimal sound design study: one short rising magical sparkle arpeggio, warm triumphant chime cascade lasting two seconds, repeated sparsely with long gaps of near silence, celebratory but soft and premium, no drums, no vocals",
+      "date": "2026-07-31T21:07:24.063Z",
+      "cost": 0.04
+    },
+    "sfx-lose": {
+      "kind": "audio",
+      "model": "google/lyria-3-clip-preview",
+      "prompt": "Minimal sound design study: one soft muted low thud, gentle friendly and warm, never harsh, repeated sparsely every three seconds with long gaps of near silence, no melody, no drums, no vocals",
+      "date": "2026-07-31T21:07:33.118Z",
+      "cost": 0.04
+    },
+    "img-coin": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "A single large golden bottle-cap coin with a crimped ridged rim and an embossed stepped voxel Persian letter پ on its face, floating at a slight three-quarter angle, centered isolated product render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:07:42.081Z",
+      "cost": 0.0679245
+    },
+    "img-treasure": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "A mound of golden voxel treasure cubes with glowing pink gems and a small golden crown resting on top, centered isolated render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:07:51.433Z",
+      "cost": 0.068336
+    },
+    "img-gamepad": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "A chunky rounded voxel gamepad with soft magenta buttons, floating at a slight angle, centered isolated product render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:08:02.908Z",
+      "cost": 0.0681275
+    },
+    "img-users": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "A small crowd of tiny abstract rounded voxel clay people gathered in a loose ring, seen from a slight high angle, centered isolated render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:08:16.113Z",
+      "cost": 0.067236
+    },
+    "img-gift": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "A rounded voxel gift box with a glowing magenta ribbon, lid slightly ajar with warm golden light spilling out, centered isolated render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:08:27.523Z",
+      "cost": 0.0672355
+    },
+    "img-phone": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "A rounded voxel smartphone floating at a slight angle, its screen glowing with a tiny magenta voxel pressure vessel game scene, centered isolated product render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:08:35.637Z",
+      "cost": 0.06844
+    },
+    "img-arrows": {
+      "kind": "image",
+      "model": "google/gemini-3.1-flash-image",
+      "prompt": "Two chunky rounded voxel arrow tokens facing each other in balance, one mint green pointing up and one soft red pointing down, centered isolated render, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:08:43.686Z",
+      "cost": 0.068056
+    },
+    "coin-spin": {
+      "kind": "video",
+      "model": "google/veo-3.1-lite",
+      "prompt": "Locked camera, pure black background. One centered golden voxel bottle-cap coin with an embossed stepped voxel Persian letter پ on its face rotates slowly in place through exactly one full turn, soft magenta rim light, gentle gold glints, isolated effect, first and last frame must match for a perfect seamless loop, soft clay 3D render, voxel-stepped forms, matte material, deep dark magenta background #16040d, brand magenta #f42a8f accent lighting, no text, no letters",
+      "date": "2026-07-31T21:10:18.874Z",
       "cost": 0.64
     }
   }

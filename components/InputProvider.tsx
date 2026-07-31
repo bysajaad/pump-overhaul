@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode, type RefObject } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, type ReactNode, type RefObject } from "react";
 import { TILT_GRANTED_EVENT } from "@/lib/useTiltPermission";
 
 interface Point { x: number; y: number }
@@ -12,6 +12,12 @@ interface InputContextValue {
   scrollVelocity: RefObject<number>;
   reducedMotion: RefObject<boolean>;
   tiltGranted: RefObject<boolean>;
+  /**
+   * Re-zero the tilt baseline to the device's current pose. The first
+   * orientation reading after permission auto-calibrates; call this when the
+   * moment of calibration should be deliberate (e.g. the onboarding tap).
+   */
+  calibrateTilt: () => void;
 }
 
 const InputContext = createContext<InputContextValue | null>(null);
@@ -26,6 +32,8 @@ export function InputProvider({ children }: { children: ReactNode }) {
   const scrollVelocity = useRef(0);
   const reducedMotion = useRef(false);
   const tiltGranted = useRef(false);
+  const tiltBaseline = useRef<{ beta: number; gamma: number } | null>(null);
+  const rawTilt = useRef<{ beta: number; gamma: number } | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -47,8 +55,17 @@ export function InputProvider({ children }: { children: ReactNode }) {
       previousTime = now;
     };
     const readTilt = (event: DeviceOrientationEvent) => {
-      tiltTarget.current.x = Math.max(-1, Math.min(1, (event.gamma ?? 0) / 25));
-      tiltTarget.current.y = Math.max(-1, Math.min(1, -((event.beta ?? 0) - 45) / 25));
+      if (event.beta == null || event.gamma == null) return;
+      rawTilt.current = { beta: event.beta, gamma: event.gamma };
+      // Tilt is measured relative to the pose the phone was in when input
+      // started, not an absolute angle — a fixed 45° assumption reads as a
+      // constant unwanted offset for anyone holding their phone differently.
+      if (!tiltBaseline.current) {
+        tiltBaseline.current = { beta: event.beta, gamma: event.gamma };
+      }
+      const base = tiltBaseline.current;
+      tiltTarget.current.x = Math.max(-1, Math.min(1, (event.gamma - base.gamma) / 25));
+      tiltTarget.current.y = Math.max(-1, Math.min(1, -((event.beta - base.beta) / 25)));
     };
     const grantTilt = () => {
       if (tiltGranted.current) return;
@@ -96,7 +113,14 @@ export function InputProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const value = useMemo(() => ({ pointer, tilt, progress, scrollVelocity, reducedMotion, tiltGranted }), []);
+  const calibrateTilt = useCallback(() => {
+    tiltBaseline.current = rawTilt.current ? { ...rawTilt.current } : null;
+  }, []);
+
+  const value = useMemo(
+    () => ({ pointer, tilt, progress, scrollVelocity, reducedMotion, tiltGranted, calibrateTilt }),
+    [calibrateTilt],
+  );
   return <InputContext.Provider value={value}>{children}</InputContext.Provider>;
 }
 

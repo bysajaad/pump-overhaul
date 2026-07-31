@@ -5,10 +5,13 @@ import { PoolReadout } from "@/components/PoolReadout";
 import { CallInstrument } from "@/components/CallInstrument";
 import { GameProvider } from "@/components/GameProvider";
 import { InputProvider } from "@/components/InputProvider";
+import { AudioProvider } from "@/components/AudioProvider";
+import { Onboarding } from "@/components/Onboarding";
 import { Header } from "@/components/Header";
 import { Gamepad, Gift, Play, Users } from "@/components/icons";
 import { TiltMicrocopy } from "@/components/TiltMicrocopy";
 import { faCompactToman, faNum } from "@/lib/format";
+import { assetPath } from "@/lib/base-path";
 
 /**
  * Beat composition.
@@ -31,6 +34,7 @@ function Beat({
   title,
   children,
   align = "center",
+  img,
 }: {
   title: string;
   children: ReactNode;
@@ -40,6 +44,8 @@ function Beat({
    * over the podium and hides the geometry the beat is about.
    */
   align?: "center" | "top";
+  /** Regenerated clay motif beside the title — illustration, never chrome. */
+  img?: { src: string; alt: string };
 }) {
   return (
     <section
@@ -48,7 +54,17 @@ function Beat({
       }`}
     >
       <div className="parallax-panel rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
-        <h2 className="text-2xl font-extrablack leading-2xl text-neutral-white">{title}</h2>
+        <div className="flex items-center gap-4">
+          {img && (
+            <img
+              src={assetPath(img.src)}
+              alt={img.alt}
+              loading="lazy"
+              className="size-16 shrink-0 rounded-2xl border border-glass-white-10 object-cover"
+            />
+          )}
+          <h2 className="text-2xl font-extrablack leading-2xl text-neutral-white">{title}</h2>
+        </div>
         <div className="mt-4 flex flex-col gap-4">{children}</div>
       </div>
     </section>
@@ -60,8 +76,10 @@ export default function Home() {
     <PressureProvider>
       <InputProvider>
         <GameProvider>
+          <AudioProvider>
           <Header />
           <Stage />
+          <Onboarding />
 
       <main className="relative z-10">
         {/* -- Beat 1: Pressure. Playable before anything is explained. ----- */}
@@ -75,7 +93,10 @@ export default function Home() {
         </section>
 
         {/* -- Beat 2: the mechanic, now that it has been felt -------------- */}
-        <Beat title="جایزه را جمع باد می‌کند">
+        <Beat
+          title="جایزه را جمع باد می‌کند"
+          img={{ src: "/media/img-treasure.webp", alt: "تپهٔ گنج ووکسل با تاج طلایی" }}
+        >
           <p className="text-md leading-md text-neutral-850">
             هر بازی که هر کاربری انجام می‌دهد، به فشار مخزن اضافه می‌کند. جایزهٔ هفتگی عدد
             ثابتی نیست که از قبل تعیین شده باشد — با بازی‌کردن همه بزرگ می‌شود، و سهم هر کس
@@ -88,7 +109,10 @@ export default function Home() {
         </Beat>
 
         {/* -- Beat 3: even losing pays ------------------------------------- */}
-        <Beat title="باخت هم پامپز دارد">
+        <Beat
+          title="باخت هم پامپز دارد"
+          img={{ src: "/media/img-gift.webp", alt: "جعبهٔ هدیهٔ ووکسل با نور طلایی" }}
+        >
           <p className="text-md leading-md text-neutral-850">
             اگر اشتباه پیش‌بینی کنی، چیزی از دست نمی‌دهی — بازهم پامپز می‌گیری، فقط کمتر. این
             سخاوتمندانه‌ترین قاعدهٔ پامپ است و امروز فقط در پرسش‌های متداول نوشته شده. اینجا
@@ -97,7 +121,10 @@ export default function Home() {
         </Beat>
 
         {/* -- Beat 4: the path, which the camera climbs here ---------------- */}
-        <Beat title="مسیر ۲۵ پله‌ای، این‌بار به‌عنوان ساز">
+        <Beat
+          title="مسیر ۲۵ پله‌ای، این‌بار به‌عنوان ساز"
+          img={{ src: "/media/img-coin.webp", alt: "سکهٔ درب‌بطری طلایی با نشان پ" }}
+        >
           <p className="text-md leading-md text-neutral-850">
             همان ۲۵ پلهٔ رسیدن به جایزهٔ بزرگ، اما نه به‌شکل یک تصویر ثابت. پله‌ها دور مخزن
             بالا می‌روند و هر کدام با پر شدن استخر روشن می‌شوند — پله‌ای که همین حالا در حال
@@ -109,7 +136,11 @@ export default function Home() {
         </Beat>
 
         {/* -- Beat 5: the crowd, in numbers -------------------------------- */}
-        <Beat title="این فشار از کجا می‌آید" align="top">
+        <Beat
+          title="این فشار از کجا می‌آید"
+          align="top"
+          img={{ src: "/media/img-users.webp", alt: "جمعیت مجسمه‌های ووکسل" }}
+        >
           <dl className="grid grid-cols-2 gap-4">
             {[
               { label: "کاربر فعال", value: `${faNum(4)}+ میلیون`, Icon: Users },
@@ -139,9 +170,17 @@ export default function Home() {
         {/* -- Beat 6: the ask, which is just "keep playing" ---------------- */}
         <section className="flex min-h-dvh flex-col items-center justify-center gap-6 px-5 text-center">
           <div className="parallax-panel rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
-            <h2 className="max-w-[30rem] text-2xl font-extrablack leading-2xl text-neutral-white">
-              دعوت پایانی، «نصب کن» نیست
-            </h2>
+            <div className="flex items-center gap-4">
+              <img
+                src={assetPath("/media/img-phone.webp")}
+                alt="گوشی ووکسل با صحنهٔ بازی روی صفحه"
+                loading="lazy"
+                className="size-16 shrink-0 rounded-2xl border border-glass-white-10 object-cover"
+              />
+              <h2 className="max-w-[30rem] text-2xl font-extrablack leading-2xl text-neutral-white">
+                دعوت پایانی، «نصب کن» نیست
+              </h2>
+            </div>
             <p className="mt-4 max-w-[32rem] text-md leading-md text-neutral-850">
               تو از دقیقهٔ اول بازی کردی. چیزی نمانده که برای شروع لازم باشد — فقط ادامه دادن.
             </p>
@@ -155,6 +194,7 @@ export default function Home() {
           نمونهٔ آزمایشی طراحی — وابسته یا منتشرشده توسط پامپ نیست.
         </footer>
           </main>
+          </AudioProvider>
         </GameProvider>
       </InputProvider>
     </PressureProvider>
