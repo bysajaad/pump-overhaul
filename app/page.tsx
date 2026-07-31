@@ -22,9 +22,26 @@ import { faCompactToman, faNum } from "@/lib/format";
  * the brand's existing glass-over-dark depth model keeps legibility structural
  * instead of hoping the composition cooperates.
  */
-function Beat({ title, children }: { title: string; children: ReactNode }) {
+function Beat({
+  title,
+  children,
+  align = "center",
+}: {
+  title: string;
+  children: ReactNode;
+  /**
+   * `top` parks the panel against the top of the viewport instead of centring
+   * it. Used for the wide pull-back beat, where a centred panel sits exactly
+   * over the podium and hides the geometry the beat is about.
+   */
+  align?: "center" | "top";
+}) {
   return (
-    <section className="mx-auto flex min-h-dvh max-w-[36rem] flex-col justify-center px-5">
+    <section
+      className={`mx-auto flex min-h-dvh max-w-[36rem] flex-col px-5 ${
+        align === "top" ? "justify-start pt-[8vh]" : "justify-center"
+      }`}
+    >
       <div className="rounded-3xl border border-glass-white-10 bg-glass-black-60 p-6 backdrop-blur-md">
         <h2 className="text-2xl font-extrablack leading-2xl text-neutral-white">{title}</h2>
         <div className="mt-4 flex flex-col gap-4">{children}</div>
@@ -83,7 +100,7 @@ export default function Home() {
         </Beat>
 
         {/* -- Beat 5: the crowd, in numbers -------------------------------- */}
-        <Beat title="این فشار از کجا می‌آید">
+        <Beat title="این فشار از کجا می‌آید" align="top">
           <dl className="grid grid-cols-2 gap-4">
             {[
               { label: "کاربر فعال", value: `${faNum(4)}+ میلیون` },
