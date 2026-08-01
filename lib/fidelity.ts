@@ -20,7 +20,12 @@ export interface Fidelity {
   vesselDetail: number;
   /** Selective bloom is the most expensive pass we run. */
   postprocessing: boolean;
-  /** Scroll-linked camera movement; off means beats cut instead of fly. */
+  /**
+   * Scroll-linked camera movement. Only reduced motion turns this off: the
+   * flight is a handful of lerps and the scene re-renders every frame anyway,
+   * so cutting it saves nothing on weak hardware — it just froze the stage on
+   * exactly the mid-tier phones the LOW tier exists for.
+   */
   cameraOnScroll: boolean;
   /** Pointer, tilt, and velocity-linked transforms. */
   parallax: boolean;
@@ -54,7 +59,9 @@ const LOW: Fidelity = {
   crowdCount: 600,
   vesselDetail: 48,
   postprocessing: false,
-  cameraOnScroll: false,
+  // Camera flight stays on: it is cheap, and without it the stage never moves
+  // on the mid-tier Androids this tier targets.
+  cameraOnScroll: true,
   parallax: true,
   coinDetail: 16,
   burstCount: 12,
@@ -90,16 +97,20 @@ export function resolveFidelity(): Fidelity {
     return NONE;
   }
 
-  const cores = navigator.hardwareConcurrency ?? 4;
-  if (cores <= 4) return LOW;
-
-  // iPhones report 6+ cores and would take the full HIGH tier, but a 3x
-  // Retina canvas at dpr 2 plus bloom is a thermal trap on Safari. Cap the
-  // pixel ratio — visually indistinguishable from 2 on a phone, much cooler.
+  // iPhones take HIGH before the cores check: older Safari does not expose
+  // hardwareConcurrency (the `?? 4` fallback would dump them into LOW), and a
+  // 3x Retina canvas at dpr 2 plus bloom is a thermal trap on Safari, so the
+  // pixel-ratio cap — not a tier drop — is the right cost control. Visually
+  // indistinguishable from 2 on a phone, much cooler.
   const ios =
     /iP(hone|ad|od)/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  return ios ? { ...HIGH, dpr: [1, 1.6] } : HIGH;
+  if (ios) return { ...HIGH, dpr: [1, 1.6] };
+
+  const cores = navigator.hardwareConcurrency ?? 4;
+  if (cores <= 4) return LOW;
+
+  return HIGH;
 }
 
 export { HIGH as HIGH_FIDELITY, LOW as LOW_FIDELITY, NONE as NO_WEBGL_FIDELITY };
